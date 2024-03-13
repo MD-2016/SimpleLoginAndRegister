@@ -1,8 +1,12 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
     systems.url = "github:nix-systems/default";
     devenv.url = "github:cachix/devenv";
+    phps = {
+      url = "github:fossar/nix-phps";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   nixConfig = {
@@ -28,16 +32,20 @@
             default = devenv.lib.mkShell {
               inherit inputs pkgs;
               modules = [
-                {
-                  # https://devenv.sh/reference/options/
-                  packages = [ pkgs.hello ];
+                  {
+                    packages = with pkgs; [
+                      php83Packages.composer
+                    ];
 
-                  enterShell = ''
-                    hello
-                  '';
+                    languages.php = {
+                      enable = true;
+                      version = "8.3";
+                    };
 
-                  processes.run.exec = "hello";
-                }
+                    services.postgres = {
+                      enable = true;
+                    };
+                  }
               ];
             };
           });
