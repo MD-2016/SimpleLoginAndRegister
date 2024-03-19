@@ -35,6 +35,7 @@
                   {
                     packages = with pkgs; [
                       php83Packages.composer
+                      pgadmin4
                     ];
 
                     languages.php = {
@@ -44,6 +45,7 @@
 
                     services.postgres = {
                       enable = true;
+                      package = pkgs.postgresql_16;
                     };
                   }
               ];
