@@ -35,20 +35,13 @@
                   {
                     packages = with pkgs; [
                       php83Packages.composer
-                      pgadmin4
-                      php83Extensions.pgsql
+                      php83Extensions.mysqli
+                      php83Extensions.pdo_mysql
                     ];
 
                     languages.php = {
                       enable = true;
                       version = "8.3";
-                    };
-
-                    services.postgres = {
-                      enable = true;
-                      package = pkgs.postgresql_15;
-                      initialDatabases = [{name = "logindb";}];
-                      listen_addresses = "0.0.0.0";
                     };
                   }
               ];

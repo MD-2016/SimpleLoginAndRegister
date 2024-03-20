@@ -1,0 +1,25 @@
+version: "3.7"
+
+services:
+  app:
+    build: ./DockerFile
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www
+    
+  db:
+    image: mysql:latest
+    ports:
+      - "3307:3306"
+    volumes:
+      - logindb:/var/lib/mysql
+      - ./mysql-config.cnf:/etc/mysql/conf.d/config.cnf
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: logindb
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+  
+volumes:
+  logindb:
