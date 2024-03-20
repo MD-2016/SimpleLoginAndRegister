@@ -2,24 +2,40 @@ version: "3.7"
 
 services:
   app:
-    build: ./DockerFile
+    build: .
     ports:
       - "8080:80"
     volumes:
       - ./:/var/www
+    networks:
+      - dev-env
     
   db:
     image: mysql:latest
     ports:
-      - "3307:3306"
+      - "3306:3306"
     volumes:
       - logindb:/var/lib/mysql
-      - ./mysql-config.cnf:/etc/mysql/conf.d/config.cnf
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: logindb
       MYSQL_USER: root
       MYSQL_PASSWORD: root
+    restart: always
+    networks:
+      - dev-env
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    ports:
+      - 8090:80
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=db
+    depends_on:
+      - db
   
 volumes:
   logindb:
+networks:
+  dev-env:
