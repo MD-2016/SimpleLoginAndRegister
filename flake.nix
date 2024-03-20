@@ -36,6 +36,7 @@
                     packages = with pkgs; [
                       php83Packages.composer
                       pgadmin4
+                      php83Extensions.pgsql
                     ];
 
                     languages.php = {
@@ -45,7 +46,9 @@
 
                     services.postgres = {
                       enable = true;
-                      package = pkgs.postgresql_16;
+                      package = pkgs.postgresql_15;
+                      initialDatabases = [{name = "logindb";}];
+                      listen_addresses = "0.0.0.0";
                     };
                   }
               ];
