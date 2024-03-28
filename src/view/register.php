@@ -1,3 +1,41 @@
+<?php
+    $validator = new Validate;
+    $userControl = new UserController;
+
+    $options = ['cost' => 12];
+
+    if(isset($_POST['submit'])) {
+      $errors = array_filter(
+        ['email' => $validator::validateEmail($_POST['email']),
+         'password' => $validator::validatePassword($_POST['password']),
+         'confirmpassword' => $validator::validateRepeatPassword($_POST['password'], $_POST['confirmpassword'])
+      ]);
+
+      if(empty($errors)) {
+        $email = htmlspecialchars($_POST['email'], ENT_QUOTES | ENT_DISALLOWED, "UTF-8");
+        $pass = htmlspecialchars($_POST['password'], ENT_QUOTES | ENT_DISALLOWED, "UTF-8");
+
+        $encryptedPass = password_hash($pass, PASSWORD_BCRYPT, $options);
+        $checkUserExists = $userControl->find_User($email, $encryptedPass);
+
+        if($checkUserExists && password_verify($encryptedPass, $checkUserExists['password'])) {
+           echo "<p>", "User already exists", "</p>";
+        } else {
+          $successfulAdd = $userControl->add_User($email, $encryptedPass);
+          if($successfulAdd) {
+            echo "<p>", "User has been added to the site", "</p>";
+
+            $_SESSION['id'] = $_SESSION['user_id'];
+            header("location:userpage.php");
+          } else {
+            echo "<p>","An unknown error has occurred","</p>";
+          }
+        }
+      }
+    }
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,20 +55,44 @@
                     <div class="card-body p-5 text-center">
           
                       <h3 class="mb-5">Sign Up</h3>
+
+                      <?php 
+                          if(!empty($errors['email'])) {
+                            foreach($errors['email'] as $error) {
+                              echo '<p>', htmlentities($error), '</p>';
+                            }
+                          }
+                      ?>
           
                       <div class="form-outline mb-4">
                         <label class="form-label" for="typeEmailX-2">Email</label>
-                        <input type="email" id="typeEmailX-2" class="form-control form-control-lg border border-dark" />
+                        <input type="email" id="typeEmailX-2" class="form-control form-control-lg border border-dark" name="email"/>
                       </div>
+
+                      <?php 
+                          if(!empty($errors['password'])) {
+                            foreach($errors['password'] as $error) {
+                              echo '<p>', htmlentities($error), '</p>';
+                            }
+                          }
+                      ?>
           
                       <div class="form-outline mb-4">
                         <label class="form-label" for="typePasswordX-2">Password</label>
-                        <input type="password" id="typePasswordX-2" class="form-control form-control-lg border border-dark" />
+                        <input type="password" id="typePasswordX-2" class="form-control form-control-lg border border-dark" name="password"/>
                       </div>
+
+                      <?php 
+                          if(!empty($errors['confirmpassword'])) {
+                            foreach($errors['confirmpassword'] as $error) {
+                              echo '<p>', htmlentities($error), '</p>';
+                            }
+                          }
+                      ?>
 
                       <div class="form-outline mb-4">
                         <label class="form-label" for="typePasswordX-3">Confirm Password</label>
-                        <input type="password" id="typePasswordX-2" class="form-control form-control-lg border border-dark"/>
+                        <input type="password" id="typePasswordX-2" class="form-control form-control-lg border border-dark" name="confirmpassword"/>
                       </div>
           
                       <button class="btn btn-primary btn-lg btn-block" type="submit">Register</button>
