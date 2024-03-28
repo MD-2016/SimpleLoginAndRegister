@@ -1,3 +1,45 @@
+<?php
+  include('../helpers/validateForms.php');
+  include('../controller/usercontroller.php');
+
+  $validator = new Validate;
+  $userControl = new UserController;
+
+  // validate the email and password fields for being blank then check for html entities
+
+      $options = [
+        'cost' => 12
+      ];
+
+      if(isset($_POST['submit'])) {
+        $errors = array_filter(['email' => $validator::validateEmail($_POST['email']),
+          'password' => $validator::validatePassword($_POST['password'])]);
+
+          if(empty($errors)) {
+            $email = htmlspecialchars($_POST['email'], ENT_QUOTES | ENT_DISALLOWED, "UTF-8");
+            $pass = htmlspecialchars($_POST['password'], ENT_QUOTES | ENT_DISALLOWED, "UTF-8");
+
+            $encryptedPass = password_hash($pass, PASSWORD_BCRYPT, $options);
+
+            $checkUserExists = $userControl->find_User($email, $encryptedPass);
+
+            if($checkUserExists && password_verify($encryptedPass, $checkUserExists['password'])) {
+               session_regenerate_id();
+
+               $_SESSION['id'] = $_SESSION['user_id'];
+               header("location:userpage.php");
+            }
+          }
+      }
+
+  // if validation is good, then post email and password to check against the database
+
+  // if results match database, redirect user to their web page
+
+  // if results dont match, alert the user they need to make an account.
+
+  // TODO: add check for already logged in and redirect the user.
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,13 +60,27 @@
           
                       <h3 class="mb-5">Sign in</h3>
           
+                      <?php 
+                          if(!empty($errors['email'])) {
+                            foreach($errors['email'] as $error) {
+                              echo '<p>', htmlentities($error), '</p>';
+                            }
+                          }
+                      ?>
                       <div class="form-outline mb-4">
-                        <input type="email" id="typeEmailX-2" class="form-control form-control-lg border border-dark" />
+                        <input type="email" id="typeEmailX-2" class="form-control form-control-lg border border-dark" name="email"/>
                         <label class="form-label" for="typeEmailX-2">Email</label>
                       </div>
           
+                      <?php 
+                          if(!empty($errors['password'])) {
+                            foreach($errors['password'] as $error) {
+                              echo '<p>', htmlentities($error), '</p>';
+                            }
+                          }
+                      ?>
                       <div class="form-outline mb-4">
-                        <input type="password" id="typePasswordX-2" class="form-control form-control-lg border border-dark" />
+                        <input type="password" id="typePasswordX-2" class="form-control form-control-lg border border-dark" name="password"/>
                         <label class="form-label" for="typePasswordX-2">Password</label>
                       </div>
           

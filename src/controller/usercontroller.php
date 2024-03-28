@@ -17,4 +17,8 @@ class UserController extends User {
     public function select_User($id) {
         return $this->selectAllUser($id);
     }
+
+    public function find_User($email, $pass) {
+        return $this->findUser($email, $pass);
+    }
 }

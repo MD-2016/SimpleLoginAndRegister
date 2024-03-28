@@ -8,7 +8,7 @@ class Validate {
             $errors[] = 'Email is required';
         }
 
-        if(!filter_var($input, FILTER_SANITIZE_EMAIL)) {
+        if(!filter_var($input, FILTER_VALIDATE_EMAIL)) {
             $errors[] = 'Email must be in proper format with name @ domain';
         }
 
