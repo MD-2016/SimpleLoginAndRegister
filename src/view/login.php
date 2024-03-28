@@ -24,7 +24,7 @@
             $checkUserExists = $userControl->find_User($email, $encryptedPass);
 
             if($checkUserExists && password_verify($encryptedPass, $checkUserExists['password'])) {
-               session_regenerate_id();
+               session_start();
 
                $_SESSION['id'] = $_SESSION['user_id'];
                header("location:userpage.php");

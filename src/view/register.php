@@ -1,4 +1,12 @@
 <?php
+
+    /*
+        tasks with register...
+            1. Redirect user to login page to sign in after successful addition to database
+            2. alert the user if they already exist and redirect them to login
+            3. alert user to errors in the input
+            4. 
+    */
     $validator = new Validate;
     $userControl = new UserController;
 
@@ -23,10 +31,10 @@
         } else {
           $successfulAdd = $userControl->add_User($email, $encryptedPass);
           if($successfulAdd) {
-            echo "<p>", "User has been added to the site", "</p>";
+            echo "<p>", "User has been added to the site. Please sign in", "</p>";
 
             $_SESSION['id'] = $_SESSION['user_id'];
-            header("location:userpage.php");
+            header("location:login.php");
           } else {
             echo "<p>","An unknown error has occurred","</p>";
           }
