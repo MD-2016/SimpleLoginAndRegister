@@ -1,3 +1,19 @@
+<?php
+
+    if(isset($_POST['submit'])) {
+
+        if(isset($_COOKIE[session_name()])) {
+            setcookie(session_name(), '',time() - 3600, '/');
+        }
+
+        $_SESSION[] = array();
+        session_destroy();
+        header("location: ../view/login.php");
+    }
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,12 +24,13 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </head>
 <body>
+    <form action="" method="post">
     <div class="px-4 py-5 my-5 text-center">
         <h1 class="display-5 fw-bold text-body-emphasis">User page</h1>
         <div class="col-lg-6 mx-auto">
             <p class="lead mb-4"></p>
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                <button class="btn btn-primary btn-lg px-4 gap-3" type="button">Log out</button>
+                <button class="btn btn-primary btn-lg px-4 gap-3" type="submit">Log out</button>
             </div>
         </div>
     </div>

@@ -1,3 +1,18 @@
+<?php
+
+    if(isset($_POST['submit'])) {
+
+        if(isset($_COOKIE[session_name()])) {
+            setcookie(session_name(), '',time() - 3600, '/');
+        }
+
+        $_SESSION[] = array();
+        session_destroy();
+        header("location: ../view/login.php");
+    }
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
