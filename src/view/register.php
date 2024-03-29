@@ -27,18 +27,21 @@
         $checkUserExists = $userControl->find_User($email, $encryptedPass);
 
         if($checkUserExists && password_verify($encryptedPass, $checkUserExists['password'])) {
-           echo "<p>", "User already exists", "</p>";
+           echo "<p>", "User already exists. Redirecting to login page", "</p>";
+           header("location:login.php");
+           exit;
         } else {
           $successfulAdd = $userControl->add_User($email, $encryptedPass);
           if($successfulAdd) {
             echo "<p>", "User has been added to the site. Please sign in", "</p>";
-
-            $_SESSION['id'] = $_SESSION['user_id'];
             header("location:login.php");
+            exit;
           } else {
             echo "<p>","An unknown error has occurred","</p>";
           }
         }
+      } else {
+        echo "<p>","Please fix the errors","</p>";
       }
     }
 ?>

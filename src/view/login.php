@@ -1,6 +1,7 @@
 <?php
   include('../helpers/validateForms.php');
   include('../controller/usercontroller.php');
+  include('../helpers/tokenCheck.php');
 
   $validator = new Validate;
   $userControl = new UserController;
@@ -25,10 +26,24 @@
 
             if($checkUserExists && password_verify($encryptedPass, $checkUserExists['password'])) {
                session_start();
+               $token = bin2hex(random_bytes(32));
+               $_SESSION['token'] = $token;
+               $_SESSION['id'] = $checkUserExists['user_id'];
 
-               $_SESSION['id'] = $_SESSION['user_id'];
+               $tokenChecker = checkToken($token);
+
+               if(!$tokenChecker) {
+                echo "<p>","Invalid form submission","</p>";
+                exit;
+               }
+
                header("location:userpage.php");
+               exit;
+            } else {
+              echo "<p>", "Either user does not exist or password doesnt match. Please try again", "</p>";
             }
+          } else {
+            echo "<p>","Please fix errors","</p>";
           }
       }
 
@@ -86,6 +101,7 @@
           
                       <!-- Checkbox -->
                       <div class="form-check d-flex justify-content-start mb-4">
+                        <input type="hidden" name="csrf-token" value="<?php echo $token;?>" required/>
                         <input class="form-check-input" type="checkbox" value="" id="form1Example3" />
                         <label class="form-check-label" for="form1Example3"> Remember password </label>
                       </div>
