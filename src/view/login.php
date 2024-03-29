@@ -46,14 +46,6 @@
             echo "<p>","Please fix errors","</p>";
           }
       }
-
-  // if validation is good, then post email and password to check against the database
-
-  // if results match database, redirect user to their web page
-
-  // if results dont match, alert the user they need to make an account.
-
-  // TODO: add check for already logged in and redirect the user.
 ?>
 <!DOCTYPE html>
 <html lang="en">
