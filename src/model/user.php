@@ -24,14 +24,14 @@
         $stmt = $conn->connect()->prepare($sql);
         return $stmt->execute([$id]); 
     }
-    public function selectAllUser($id){
+    public function selectUser($id){
         $conn = new Database;
         if($conn->connect() == null) {
             echo "connection has died";
         }
         $sql = "SELECT `email`,`joined` WHERE user_id=?";
         $stmt = $conn->connect()->prepare($sql);
-        $stmt->execute();
+        $stmt->execute([$id]);
         $res = $stmt->fetchAll();
         return $res;
     }
