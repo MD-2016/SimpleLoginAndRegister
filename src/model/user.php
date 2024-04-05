@@ -6,7 +6,7 @@
      public $conn;
 
     public function addUser($email, $pass){
-        $conn = new Database;
+        $conn = new Database();
         if($conn->connect() == null) {
             echo "connection has died";
         }
@@ -16,7 +16,7 @@
         return $stmt = $stmt->execute([$email, $pass, $date]);
     }
     public function removeUser($id){
-        $conn = new Database;
+        $conn = new Database();
         if($conn->connect() == null) {
             echo "connection has died";
         }
@@ -25,7 +25,7 @@
         return $stmt->execute([$id]); 
     }
     public function selectUser($id){
-        $conn = new Database;
+        $conn = new Database();
         if($conn->connect() == null) {
             echo "connection has died";
         }
@@ -36,7 +36,7 @@
         return $res;
     }
     public function updateUser($id, $email, $pass){
-        $conn = new Database;
+        $conn = new Database();
         if($conn->connect() == null) {
             echo "connection has died";
         }
@@ -47,7 +47,7 @@
     }
 
     public function findUser($email, $pass) {
-        $conn = new Database;
+        $conn = new Database();
         if($conn->connect() == null) {
             echo "connection has died";
         }
