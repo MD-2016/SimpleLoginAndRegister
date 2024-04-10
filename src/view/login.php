@@ -1,63 +1,12 @@
 <?php
   include('../helpers/validateForms.php');
   include('../controller/usercontroller.php');
-  include('../helpers/tokenCheck.php');
 
   $validator = new Validate;
   $userControl = new UserController;
-  $errorPage = "";
-  $errorLogin = "";
-  $errorEmail = [];
-  $errorPass = [];
 
-  // validate the email and password fields for being blank then check for html entities
-
-      $options = [
-        'cost' => 12
-      ];
-
-
-      if(isset($_POST['submit'])) {
-        #$errors = array_filter(['email' => $validator::validateEmail($_POST['email']),
-         # 'password' => $validator::validatePassword($_POST['password'])]);
-
-         $errorEmail = $validator::validateEmail($_POST['email']);
-         $errorPass = $validator::validatePassword($_POST['password']);
-
-         var_dump($errorEmail);
-         var_dump($errorPass);
-
-         
-         
-
-        // session_start();
-         //$token = bin2hex(random_bytes(32));
-
-        
-
-          if(empty($errorEmail) && empty($errorPass)) {
-            $email = htmlspecialchars($_POST['email'], ENT_QUOTES | ENT_DISALLOWED, "UTF-8");
-            $pass = htmlspecialchars($_POST['password'], ENT_QUOTES | ENT_DISALLOWED, "UTF-8");
-
-            $encryptedPass = password_hash($pass, PASSWORD_BCRYPT, $options);
-
-            $checkUserExists = $userControl->find_User($email, $encryptedPass);
-
-            if($checkUserExists && password_verify($encryptedPass, $checkUserExists['password'])) {
-              
-               $_SESSION['token'] = $token;
-               $_SESSION['id'] = $checkUserExists['user_id'];
-
-               header("location:userpage.php");
-               exit;
-            } else {
-
-              $errorLogin = "<p> Either user does not exist or password doesnt match. Please try again </p>";
-            }
-          } else {
-            $errorPage = "<p> Please fix errors with input no blanks </p>";
-          }
-      }
+  
+  
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -79,26 +28,13 @@
           
                       <h3 class="mb-5">Sign in</h3>
 
-                      <?php
-                          if(!empty($errorEmail)) {
-                            foreach($errorEmail as $error) {
-                              echo '<p>',htmlentities($error),'</p>'; 
-                            }
-                          }
-                      ?>
                       
                       <div class="form-outline mb-4">
                         <input type="email" id="typeEmailX-2" class="form-control form-control-lg border border-dark" name="email"/>
                         <label class="form-label" for="typeEmailX-2">Email</label>
                       </div>
 
-                      <?php
-                          if(!empty($errorPass)) {
-                            foreach($errorPass as $error) {
-                              echo '<p>',htmlentities($error),'</p>'; 
-                            }
-                          }
-                      ?>
+                     
           
                      
                       <div class="form-outline mb-4">
@@ -112,7 +48,7 @@
                         <label class="form-check-label" for="form1Example3"> Remember password </label>
                       </div>
           
-                      <button class="btn btn-primary btn-lg btn-block" type="submit">Login</button>
+                      <button class="btn btn-primary btn-lg btn-block" type="submit" name="submit">Login</button>
                     </div>
                   </div>
                 </div>

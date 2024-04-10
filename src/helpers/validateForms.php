@@ -29,12 +29,17 @@ class Validate {
         $errors = [];
         if(empty($firstpass) || empty($secondpass)) {
             $errors[] = 'Both password fields must be filled out';
+
+           
+        } else {
+            if($firstpass != $secondpass) {
+                $errors[] = 'Passwords do not match';
+            }
+    
         }
 
-        if(strncmp($firstpass, $secondpass, count($firstpass)) != 0) {
-            $errors[] = 'Passwords do not match';
-        }
 
+       
         return $errors;
     }
 }

@@ -12,53 +12,27 @@ include "../controller/usercontroller.php";
     */
     $validator = new Validate();
     $userControl = new UserController();
-    $errorPage = "";
-    $errorLogin = "";
-    $errorEmail = [];
-    $errorPass = [];
-    $errorRepeat = [];
-    
-
-    $options = ['cost' => 12];
 
     if(isset($_POST['submit'])) {
-      /*
-      $errors = array_filter(
-        ['email' => $validator::validateEmail($_POST['email']),
-         'password' => $validator::validatePassword($_POST['password']),
-         'confirmpassword' => $validator::validateRepeatPassword($_POST['password'], $_POST['confirmpassword'])
-      ]);
-      */
+        // check if the input is blank
+        $errorEmail = $validator::validateEmail($_POST['email']);
+        $errorPass = $validator::validatePassword($_POST['password']);
+        $errorConfirm = $validator::validateRepeatPassword($_POST['password'], $_POST['confirmpassword']);
 
-      $errorEmail = $validator::validateEmail($_POST['email']);
-      $errorPass = $validator::validatePassword($_POST['password']);
-      $errorRepeat = $validator::validateRepeatPassword($_POST['password'],$_POST['confirmpassword']);
+       debugToConsole($errorEmail);
+       debugToConsole($errorPass);
+       debugToConsole($errorConfirm);
+       $test = "completed";
 
-      if(empty($errorEmail) && empty($errorPass) && empty($errorRepeat)) {
-        $email = htmlspecialchars($_POST['email'], ENT_QUOTES | ENT_DISALLOWED, "UTF-8");
-        $pass = htmlspecialchars($_POST['password'], ENT_QUOTES | ENT_DISALLOWED, "UTF-8");
-
-        $encryptedPass = password_hash($pass, PASSWORD_BCRYPT, $options);
-        $checkUserExists = $userControl->find_User($email, $encryptedPass);
-
-        if($checkUserExists && password_verify($encryptedPass, $checkUserExists['password'])) {
-           echo "<p>", "User already exists. Redirecting to login page", "</p>";
-           header("location:login.php");
-           exit;
-        } else {
-          $successfulAdd = $userControl->add_User($email, $encryptedPass);
-          if($successfulAdd) {
-            echo "<p>", "User has been added to the site. Please sign in", "</p>";
-            header("location:login.php");
-            exit;
-          } else {
-            echo "<p>","An unknown error has occurred","</p>";
-          }
-        }
-      } else {
-        echo "<p>","Please fix the errors","</p>";
-      }
+       if(empty($errorEmail) && empty($errorPass) && empty($errorConfirm)) {
+        debugToConsole($test);
+       }
     }
+
+    function debugToConsole($msg) {
+      echo "<script>console.log(".json_encode($msg).")</script>";
+    }
+   
 ?>
 
 
@@ -83,11 +57,25 @@ include "../controller/usercontroller.php";
                       <h3 class="mb-5">Sign Up</h3>
 
                       <?php 
-                          if(!empty($errorEmail)) {
-                            foreach($errorEmail as $error) {
-                              echo '<p>', htmlentities($error), '</p>';
-                            }
+                        if(!empty($errorEmail)) {
+                          foreach($errorEmail as $error) {
+                            echo '<p>',htmlentities($error),'</p>';
                           }
+                        }
+                      ?>
+
+                      <?php 
+                        if(!empty($errorPass)) {
+                          echo '<p>',htmlentities($errorPass),'</p>';
+                        }
+                      ?>
+
+                      <?php 
+                        if(!empty($errorConfirm)) {
+                          foreach($errorConfirm as $error) {
+                            echo '<p>',htmlentities($error),'</p>';
+                          }
+                        }
                       ?>
           
                       <div class="form-outline mb-4">
@@ -95,33 +83,20 @@ include "../controller/usercontroller.php";
                         <input type="email" id="typeEmailX-2" class="form-control form-control-lg border border-dark" name="email"/>
                       </div>
 
-                      <?php 
-                          if(!empty($errorPass)) {
-                            foreach($errorPass as $error) {
-                              echo '<p>', htmlentities($error), '</p>';
-                            }
-                          }
-                      ?>
-          
+                     
                       <div class="form-outline mb-4">
                         <label class="form-label" for="typePasswordX-2">Password</label>
                         <input type="password" id="typePasswordX-2" class="form-control form-control-lg border border-dark" name="password"/>
                       </div>
 
-                      <?php 
-                          if(!empty($errors['confirmpassword'])) {
-                            foreach($errors['confirmpassword'] as $error) {
-                              echo '<p>', htmlentities($error), '</p>';
-                            }
-                          }
-                      ?>
+                      
 
                       <div class="form-outline mb-4">
                         <label class="form-label" for="typePasswordX-3">Confirm Password</label>
                         <input type="password" id="typePasswordX-2" class="form-control form-control-lg border border-dark" name="confirmpassword"/>
                       </div>
           
-                      <button class="btn btn-primary btn-lg btn-block" type="submit">Register</button>
+                      <button class="btn btn-primary btn-lg btn-block" type="submit" name="submit">Register</button>
                     </div>
                   </div>
                 </div>
