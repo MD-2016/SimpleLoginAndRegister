@@ -29,7 +29,7 @@ include "../controller/usercontroller.php";
 
        if(empty($errorEmail) && empty($errorPass) && empty($errorConfirm)) {
           $email = htmlspecialchars($_POST['email'], ENT_QUOTES, "UTF-8");
-          $pass = htmlspecialchars($_POST['password'], ENT_QUOTES, "UTF-8");
+          $pass = $_POST['password'];
           $encryptedPass = password_hash($pass, PASSWORD_DEFAULT, $options);
 
           $added = $userControl->add_User($email, $encryptedPass);

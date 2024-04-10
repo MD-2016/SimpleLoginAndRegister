@@ -9,6 +9,7 @@
         $_SESSION[] = array();
         session_destroy();
         header("location: ../view/login.php");
+        exit;
     }
 
 ?>
@@ -30,7 +31,7 @@
         <div class="col-lg-6 mx-auto">
             <p class="lead mb-4"></p>
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                <button class="btn btn-primary btn-lg px-4 gap-3" type="submit">Log out</button>
+                <button class="btn btn-primary btn-lg px-4 gap-3" type="submit" name="submit">Log out</button>
             </div>
         </div>
     </div>

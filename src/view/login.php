@@ -4,6 +4,43 @@
 
   $validator = new Validate;
   $userControl = new UserController;
+  $res = "";
+
+  $options = [
+    'cost' => 12,
+  ];
+
+  if(isset($_POST['submit'])) {
+    $errorEmail = $validator::validateEmail($_POST['email']);
+    $errorPass = $validator::validatePassword($_POST['password']);
+
+   
+
+    if(empty($errorEmail) && empty($errorPass)) {
+
+        $email = htmlspecialchars($_POST['email'], ENT_QUOTES, "UTF-8");
+        $pass = htmlspecialchars($_POST['password'], ENT_QUOTES, "UTF-8");
+
+        debugToConsole($encryptedPass);
+
+        $existingUser = $userControl->find_User($email);
+
+        debugToConsole($existingUser);
+
+
+        if($existingUser == FALSE) {
+          $res = "User does not exist in the system";
+        } else {
+            if(password_verify($pass, $existingUser['password']) == true) {
+              $res = "Thank you for signing in. Redirecting to your page";
+              header("location: userpage.php");
+              exit;
+            } else {
+              $res = "password does not match";
+            }
+        }
+    }
+  }
 
 
   function debugToConsole($msg) {
@@ -32,6 +69,22 @@
                     <div class="card-body p-5 text-center">
           
                       <h3 class="mb-5">Sign in</h3>
+
+                      <?php echo '<p>',htmlentities($res, ENT_HTML5 | ENT_QUOTES, "UTF-8",'</p>'); ?>
+
+                      <?php
+                          if(!empty($errorEmail)) {
+                            foreach($errorEmail as $error) {
+                              echo '<p>',htmlentities($error, ENT_QUOTES | ENT_HTML5, "UTF-8"),'</p>';
+                            }
+                          }
+                      ?>
+
+                      <?php 
+                          if(!empty($errorPass)) {
+                            echo '<p>',htmlentities($errorPass, ENT_QUOTES | ENT_HTML5, "UTF-8"), '</p>';
+                          }
+                      ?>
 
                       
                       <div class="form-outline mb-4">

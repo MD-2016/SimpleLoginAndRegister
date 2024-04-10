@@ -50,16 +50,15 @@
         return $res;
     }
 
-    public function findUser($email, $pass) {
+    public function findUser($email) {
         $db = new DB();
         $conn = $db->connect();
         if($conn == null) {
             echo "connection has died";
         }
-        $sql = "SELECT `email` `password` FROM `Users` WHERE `email=:email`, `password=:password`";
+        $sql = "SELECT email, password FROM Users WHERE email=:email";
         $stmt = $conn->prepare($sql);
-        $stmt->bindValue(':email', $email, PDO::PARAM_STR);
-        $stmt->bindValue(':password', $pass, PDO::PARAM_STR);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
         $stmt->execute();
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
