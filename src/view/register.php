@@ -10,8 +10,14 @@ include "../controller/usercontroller.php";
             3. alert user to errors in the input
             4. 
     */
+
+    $options = [
+      'cost' => 12,
+    ];
+
     $validator = new Validate();
     $userControl = new UserController();
+    $res = "";
 
     if(isset($_POST['submit'])) {
         // check if the input is blank
@@ -19,20 +25,26 @@ include "../controller/usercontroller.php";
         $errorPass = $validator::validatePassword($_POST['password']);
         $errorConfirm = $validator::validateRepeatPassword($_POST['password'], $_POST['confirmpassword']);
 
-       debugToConsole($errorEmail);
-       debugToConsole($errorPass);
-       debugToConsole($errorConfirm);
-       $test = "completed";
+      
 
        if(empty($errorEmail) && empty($errorPass) && empty($errorConfirm)) {
-        debugToConsole($test);
-       }
-    }
+          $email = htmlspecialchars($_POST['email'], ENT_QUOTES, "UTF-8");
+          $pass = htmlspecialchars($_POST['password'], ENT_QUOTES, "UTF-8");
+          $encryptedPass = password_hash($pass, PASSWORD_DEFAULT, $options);
+
+          $added = $userControl->add_User($email, $encryptedPass);
+
+          if($added) {
+            $res = "User was added successfully";
+          } else {
+            $res = "User could not be added";
+          }
+      }
 
     function debugToConsole($msg) {
       echo "<script>console.log(".json_encode($msg).")</script>";
     }
-   
+  }
 ?>
 
 
@@ -53,6 +65,8 @@ include "../controller/usercontroller.php";
                 <div class="col-12 col-md-8 col-lg-6 col-xl-5">
                   <div class="card shadow-2-strong" style="border-radius: 1rem; background-color: #e8e8e8;">
                     <div class="card-body p-5 text-center">
+
+                      <?php echo '<p>',htmlentities($res), '</p>';?>
           
                       <h3 class="mb-5">Sign Up</h3>
 
