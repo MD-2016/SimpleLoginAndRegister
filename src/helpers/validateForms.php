@@ -8,6 +8,7 @@ class Validate {
             $errors[] = 'Email is required';
         }
 
+        
         if(!filter_var($input, FILTER_VALIDATE_EMAIL)) {
             $errors[] = 'Email must be in proper format with name @ domain';
         }
@@ -16,9 +17,9 @@ class Validate {
     }
 
     public static function validatePassword($password) {
-        $errors = [];
+        $errors = "";
         if(empty($password)) {
-            $errors[] = 'Password cannot be blank';
+            $errors = 'Password cannot be blank';
         }
 
         return $errors;

@@ -1,5 +1,8 @@
 <?php
 
+include "../helpers/validateForms.php";
+include "../controller/usercontroller.php";
+
     /*
         tasks with register...
             1. Redirect user to login page to sign in after successful addition to database
@@ -7,19 +10,31 @@
             3. alert user to errors in the input
             4. 
     */
-    $validator = new Validate;
-    $userControl = new UserController;
+    $validator = new Validate();
+    $userControl = new UserController();
+    $errorPage = "";
+    $errorLogin = "";
+    $errorEmail = [];
+    $errorPass = [];
+    $errorRepeat = [];
+    
 
     $options = ['cost' => 12];
 
     if(isset($_POST['submit'])) {
+      /*
       $errors = array_filter(
         ['email' => $validator::validateEmail($_POST['email']),
          'password' => $validator::validatePassword($_POST['password']),
          'confirmpassword' => $validator::validateRepeatPassword($_POST['password'], $_POST['confirmpassword'])
       ]);
+      */
 
-      if(empty($errors)) {
+      $errorEmail = $validator::validateEmail($_POST['email']);
+      $errorPass = $validator::validatePassword($_POST['password']);
+      $errorRepeat = $validator::validateRepeatPassword($_POST['password'],$_POST['confirmpassword']);
+
+      if(empty($errorEmail) && empty($errorPass) && empty($errorRepeat)) {
         $email = htmlspecialchars($_POST['email'], ENT_QUOTES | ENT_DISALLOWED, "UTF-8");
         $pass = htmlspecialchars($_POST['password'], ENT_QUOTES | ENT_DISALLOWED, "UTF-8");
 
@@ -57,7 +72,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </head>
 <body>
-    <form action="">
+    <form action="" method="post">
         <section class="vh-100" style="background-color: #162a4e;">
             <div class="container py-5 h-100">
               <div class="row d-flex justify-content-center align-items-center h-100">
@@ -68,8 +83,8 @@
                       <h3 class="mb-5">Sign Up</h3>
 
                       <?php 
-                          if(!empty($errors['email'])) {
-                            foreach($errors['email'] as $error) {
+                          if(!empty($errorEmail)) {
+                            foreach($errorEmail as $error) {
                               echo '<p>', htmlentities($error), '</p>';
                             }
                           }
@@ -81,8 +96,8 @@
                       </div>
 
                       <?php 
-                          if(!empty($errors['password'])) {
-                            foreach($errors['password'] as $error) {
+                          if(!empty($errorPass)) {
+                            foreach($errorPass as $error) {
                               echo '<p>', htmlentities($error), '</p>';
                             }
                           }

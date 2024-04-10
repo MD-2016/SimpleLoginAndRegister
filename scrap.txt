@@ -1,0 +1,15 @@
+<?php 
+                          if(!empty($errors['email'])) {
+                            foreach($errors['email'] as $error) {
+                              echo '<p>', htmlentities($error), '</p>';
+                            }
+                          }
+                      ?>
+
+ <?php 
+                          if(!empty($errors['password'])) {
+                            foreach($errors['password'] as $error) {
+                              echo '<p>', htmlentities($error), '</p>';
+                            }
+                          }
+                      ?>

@@ -1,6 +1,5 @@
 <?php
-
-include 'config.php';
+include "config.php";
 
     class Database {
       private $pdo;  
