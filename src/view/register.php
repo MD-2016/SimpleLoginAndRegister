@@ -32,13 +32,20 @@ include "../controller/usercontroller.php";
           $pass = $_POST['password'];
           $encryptedPass = password_hash($pass, PASSWORD_DEFAULT, $options);
 
-          $added = $userControl->add_User($email, $encryptedPass);
+          $checkExisting = $userControl->find_User($email);
 
-          if($added) {
-            $res = "User was added successfully";
+          if($checkExisting == false) {
+            $added = $userControl->add_User($email, $encryptedPass);
+            if($added) {
+              $res = "User was added successfully";
+            } else {
+              $res = "User could not be added";
+            }
           } else {
-            $res = "User could not be added";
+            $res = "User already exists... cannot re register";
           }
+
+         
       }
 
     function debugToConsole($msg) {
