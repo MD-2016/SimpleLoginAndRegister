@@ -1,6 +1,7 @@
 <?php
   include('../helpers/validateForms.php');
   include('../controller/usercontroller.php');
+  session_start();
 
   $validator = new Validate;
   $userControl = new UserController;
@@ -9,6 +10,15 @@
   $options = [
     'cost' => 12,
   ];
+
+  // check if the user is already logged in.
+  if(isset($_SESSION['userid'])) {
+    $userCheck = $userControl->find_User(base64_decode($_SESSION['userid']));
+    if($userCheck) {
+
+    }
+  }
+
 
   if(isset($_POST['submit'])) {
     $errorEmail = $validator::validateEmail($_POST['email']);
@@ -19,13 +29,10 @@
     if(empty($errorEmail) && empty($errorPass)) {
 
         $email = htmlspecialchars($_POST['email'], ENT_QUOTES, "UTF-8");
-        $pass = htmlspecialchars($_POST['password'], ENT_QUOTES, "UTF-8");
-
-        debugToConsole($encryptedPass);
+        $pass = $_POST['password'];
 
         $existingUser = $userControl->find_User($email);
 
-        debugToConsole($existingUser);
 
 
         if($existingUser == FALSE) {
@@ -33,6 +40,8 @@
         } else {
             if(password_verify($pass, $existingUser['password']) == true) {
               $res = "Thank you for signing in. Redirecting to your page";
+              $_SESSION['loggedIntoMDSite'] = true;
+              $_SESSION['token'] = md5(uniqid(mt_rand(), true));  
               header("location: userpage.php");
               exit;
             } else {
@@ -98,6 +107,7 @@
                       <div class="form-outline mb-4">
                         <input type="password" id="typePasswordX-2" class="form-control form-control-lg border border-dark" name="password"/>
                         <label class="form-label" for="typePasswordX-2">Password</label>
+                        <input type="hidden" name="token" value="<?php echo $_SESSION['token'] ?? ''?>"/>
                       </div>
           
                       <!-- Checkbox -->

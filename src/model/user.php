@@ -49,7 +49,7 @@
         $res = $stmt->execute([$email,$pass,$id]);
         return $res;
     }
-
+    
     public function findUser($email) {
         $db = new DB();
         $conn = $db->connect();
