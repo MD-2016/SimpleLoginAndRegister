@@ -20,12 +20,11 @@ include "../controller/usercontroller.php";
     $res = "";
 
     if(isset($_POST['submit'])) {
+
         // check if the input is blank
         $errorEmail = $validator::validateEmail($_POST['email']);
         $errorPass = $validator::validatePassword($_POST['password']);
         $errorConfirm = $validator::validateRepeatPassword($_POST['password'], $_POST['confirmpassword']);
-
-      
 
        if(empty($errorEmail) && empty($errorPass) && empty($errorConfirm)) {
           $email = htmlspecialchars($_POST['email'], ENT_QUOTES, "UTF-8");
@@ -37,7 +36,9 @@ include "../controller/usercontroller.php";
           if($checkExisting == false) {
             $added = $userControl->add_User($email, $encryptedPass);
             if($added) {
-              $res = "User was added successfully";
+              $res = "User was added successfully. Now going to login";
+              header("location: login.php");
+              exit();
             } else {
               $res = "User could not be added";
             }

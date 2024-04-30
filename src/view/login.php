@@ -11,14 +11,15 @@
     'cost' => 12,
   ];
 
-  // check if the user is already logged in.
-  if(isset($_SESSION['userid'])) {
-    $userCheck = $userControl->find_User(base64_decode($_SESSION['userid']));
-    if($userCheck) {
-
-    }
+  // Start a token
+  if(!isset($_SESSION['token'])) {
+    $_SESSION['token'] = md5(uniqid(mt_rand(), true));
   }
 
+  // check if the user is already logged in.
+  if(isset($_SESSION['loggedIntoMDSite']) && isset($_SESSION['username'])) {
+      header("location: userpage.php");
+  }
 
   if(isset($_POST['submit'])) {
     $errorEmail = $validator::validateEmail($_POST['email']);
@@ -31,6 +32,10 @@
         $email = htmlspecialchars($_POST['email'], ENT_QUOTES, "UTF-8");
         $pass = $_POST['password'];
 
+        if(!isset($_POST['token']) || $_POST['token'] !== $_SESSION['token']) {
+          $res = "cannot process login request";
+        }
+
         $existingUser = $userControl->find_User($email);
 
 
@@ -41,7 +46,7 @@
             if(password_verify($pass, $existingUser['password']) == true) {
               $res = "Thank you for signing in. Redirecting to your page";
               $_SESSION['loggedIntoMDSite'] = true;
-              $_SESSION['token'] = md5(uniqid(mt_rand(), true));  
+              $_SESSION['username'] = md5(uniqid(mt_rand(), true));
               header("location: userpage.php");
               exit;
             } else {
@@ -107,7 +112,7 @@
                       <div class="form-outline mb-4">
                         <input type="password" id="typePasswordX-2" class="form-control form-control-lg border border-dark" name="password"/>
                         <label class="form-label" for="typePasswordX-2">Password</label>
-                        <input type="hidden" name="token" value="<?php echo $_SESSION['token'] ?? ''?>"/>
+                        <input type="hidden" name="token" value="<?php echo $_SESSION['token'] ?? '';?>"/>
                       </div>
           
                       <!-- Checkbox -->
