@@ -1,7 +1,6 @@
 <?php
   include('../helpers/validateForms.php');
   include('../controller/usercontroller.php');
-  session_start();
 
   $validator = new Validate;
   $userControl = new UserController;
@@ -19,6 +18,18 @@
   // check if the user is already logged in.
   if(isset($_SESSION['loggedIntoMDSite']) && isset($_SESSION['username'])) {
       header("location: userpage.php");
+  }
+
+  if(isset($_COOKIE['rememberme'])) {
+    $cookie = $_COOKIE['rememberme'];
+    $existingUser = $userControl->find_User_By_Cookie($cookie);
+    debugToConsole($cookie);
+    debugToConsole($existingUser);
+    if(password_verify($cookie, $existingUser['cookie']) == true) {
+      $res = "Automatic login. Going to user page";
+      header("location: userpage.php");
+      exit;
+    }
   }
 
   if(isset($_POST['submit'])) {
@@ -44,9 +55,18 @@
           $res = "User does not exist in the system";
         } else {
             if(password_verify($pass, $existingUser['password']) == true) {
+              session_start();
               $res = "Thank you for signing in. Redirecting to your page";
               $_SESSION['loggedIntoMDSite'] = true;
               $_SESSION['username'] = md5(uniqid(mt_rand(), true));
+
+              if(isset($_POST['rememberme'])) {
+                $cookie = bin2hex(random_bytes(16));
+                $month = time() + 30 * 24 * 60 * 60;
+                setcookie('rememberme', $cookie, $month, '/');
+                $hash = password_hash($cookie, PASSWORD_DEFAULT);
+                $existingUser = $userControl->add_User_Cookie($existingUser['user_id'], $hash, $month);
+              }
               header("location: userpage.php");
               exit;
             } else {
@@ -117,7 +137,7 @@
           
                       <!-- Checkbox -->
                       <div class="form-check d-flex justify-content-start mb-4">
-                        <input class="form-check-input" type="checkbox" value="" id="form1Example3" />
+                        <input class="form-check-input" type="checkbox" value="" id="form1Example3" name="rememberme"/>
                         <label class="form-check-label" for="form1Example3"> Remember password </label>
                       </div>
           

@@ -21,4 +21,12 @@ class UserController extends User {
     public function find_User($email) {
         return $this->findUser($email);
     }
+
+    public function add_User_Cookie($id, $cookie, $expire) {
+        return $this->addUserCookie($id, $cookie, $expire);
+    }
+
+    public function find_User_By_Cookie($cookie) {
+        return $this->findUserByCookie($cookie);
+    }
 }

@@ -49,6 +49,32 @@
         $res = $stmt->execute([$email,$pass,$id]);
         return $res;
     }
+
+    public function addUserCookie($id, $cookie, $expire) {
+        $db = new DB();
+        $conn = $db->connect();
+        if($conn == null) {
+            echo "connection has died";
+        }
+        $sql = "UPDATE Users SET cookie=?, cookieexpire=? WHERE user_id=?";
+        $stmt = $conn->prepare($sql);
+        $res = $stmt->execute([$cookie, $expire, $id]);
+        return $res;
+    }
+
+    public function findUserByCookie($cookie) { 
+        $db = new DB();
+        $conn = $db->connect();
+        if($conn == null) {
+            echo "connection has died";
+        }
+        $sql = "SELECT user_id, email FROM Users WHERE cookie=:cookie";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':cookie', $cookie, PDO::PARAM_STR);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC); 
+    }
     
     public function findUser($email) {
         $db = new DB();
