@@ -5,7 +5,7 @@
   $validator = new Validate;
   $userControl = new UserController;
   $res = "";
-  session_start();
+  
 
   $options = [
     'cost' => 12,
@@ -39,6 +39,7 @@
     }
   }
 
+  session_start();
   
 
   if(isset($_POST['submit'])) {
