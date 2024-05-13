@@ -1,5 +1,11 @@
 <?php
 
+function debugToConsole($msg) {
+    echo "<script>console.log(".json_encode($msg).")</script>";
+  }
+
+  debugToConsole($_COOKIE['rememberme']);
+
     if(isset($_POST['submit'])) {
 
         if(isset($_COOKIE[session_name()])) {

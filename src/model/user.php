@@ -56,10 +56,13 @@
         if($conn == null) {
             echo "connection has died";
         }
-        $sql = "UPDATE Users SET cookie=?, cookieexpire=? WHERE user_id=?";
+        $sql = "UPDATE Users SET cookie=:cookie, cookieexpire=:expire WHERE user_id=:id";
         $stmt = $conn->prepare($sql);
-        $res = $stmt->execute([$cookie, $expire, $id]);
-        return $res;
+        $stmt->bindParam(':cookie', $cookie, PDO::PARAM_STR);
+        $stmt->bindParam(':expire', $expire, PDO::PARAM_STR);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt;
     }
 
     public function findUserByCookie($cookie) { 
@@ -68,7 +71,7 @@
         if($conn == null) {
             echo "connection has died";
         }
-        $sql = "SELECT user_id, email FROM Users WHERE cookie=:cookie";
+        $sql = "SELECT cookie, user_id, email FROM Users WHERE cookie=:cookie";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':cookie', $cookie, PDO::PARAM_STR);
         $stmt->execute();
@@ -82,7 +85,7 @@
         if($conn == null) {
             echo "connection has died";
         }
-        $sql = "SELECT email, password FROM Users WHERE email=:email";
+        $sql = "SELECT user_id, email, password FROM Users WHERE email=:email";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':email', $email, PDO::PARAM_STR);
         $stmt->execute();

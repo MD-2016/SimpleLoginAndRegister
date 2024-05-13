@@ -5,6 +5,7 @@
   $validator = new Validate;
   $userControl = new UserController;
   $res = "";
+  session_start();
 
   $options = [
     'cost' => 12,
@@ -18,19 +19,27 @@
   // check if the user is already logged in.
   if(isset($_SESSION['loggedIntoMDSite']) && isset($_SESSION['username'])) {
       header("location: userpage.php");
+      exit;
   }
 
+  // check if the user has a cookie saved
   if(isset($_COOKIE['rememberme'])) {
-    $cookie = $_COOKIE['rememberme'];
-    $existingUser = $userControl->find_User_By_Cookie($cookie);
-    debugToConsole($cookie);
-    debugToConsole($existingUser);
-    if(password_verify($cookie, $existingUser['cookie']) == true) {
-      $res = "Automatic login. Going to user page";
-      header("location: userpage.php");
-      exit;
+
+    $pastUser = $userControl->find_User_By_Cookie($_COOKIE['rememberme']);
+    if($pastUser == false) {
+      $res = "Cannot login by remember password. Must login again";
+    } else {
+      if($_COOKIE['rememberme'] == $pastUser['cookie']) {
+        $res = "Automatic login. Going to user page";
+        header("location: userpage.php");
+        exit;
+      } else {
+        $res = "Cannot log in. Please resign in";
+      }
     }
   }
+
+  
 
   if(isset($_POST['submit'])) {
     $errorEmail = $validator::validateEmail($_POST['email']);
@@ -55,7 +64,7 @@
           $res = "User does not exist in the system";
         } else {
             if(password_verify($pass, $existingUser['password']) == true) {
-              session_start();
+              
               $res = "Thank you for signing in. Redirecting to your page";
               $_SESSION['loggedIntoMDSite'] = true;
               $_SESSION['username'] = md5(uniqid(mt_rand(), true));
@@ -63,9 +72,11 @@
               if(isset($_POST['rememberme'])) {
                 $cookie = bin2hex(random_bytes(16));
                 $month = time() + 30 * 24 * 60 * 60;
+                $expireDate = date("Y-m-d H:m:s", $month);
                 setcookie('rememberme', $cookie, $month, '/');
-                $hash = password_hash($cookie, PASSWORD_DEFAULT);
-                $existingUser = $userControl->add_User_Cookie($existingUser['user_id'], $hash, $month);
+                //debugToConsole($existingUser['user_id']);
+                $existingUser = $userControl->add_User_Cookie($existingUser['user_id'], $cookie, $expireDate);
+                
               }
               header("location: userpage.php");
               exit;
@@ -92,6 +103,9 @@
     <title>Login Page</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+
+    </script>
 </head>
 <body>
     <form action="" method="post">
