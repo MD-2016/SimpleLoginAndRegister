@@ -39,9 +39,9 @@
     }
   }
 
-  session_start();
+ 
   
-
+  session_start();
   if(isset($_POST['submit'])) {
     $errorEmail = $validator::validateEmail($_POST['email']);
     $errorPass = $validator::validatePassword($_POST['password']);
@@ -69,6 +69,7 @@
               $res = "Thank you for signing in. Redirecting to your page";
               $_SESSION['loggedIntoMDSite'] = true;
               $_SESSION['username'] = md5(uniqid(mt_rand(), true));
+              $_SESSION['user'] = password_hash($existingUser['user_id'], PASSWORD_DEFAULT, $options);
 
               if(isset($_POST['rememberme'])) {
                 $cookie = bin2hex(random_bytes(16));

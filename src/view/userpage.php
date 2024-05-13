@@ -4,17 +4,17 @@ function debugToConsole($msg) {
     echo "<script>console.log(".json_encode($msg).")</script>";
   }
 
-  debugToConsole($_COOKIE['rememberme']);
+ //debugToConsole($_COOKIE['rememberme']);
 
     if(isset($_POST['submit'])) {
 
-        if(isset($_COOKIE[session_name()])) {
-            setcookie(session_name(), '',time() - 3600, '/');
+        if(isset($_COOKIE['rememberme'])) {
+            unset($_COOKIE['rememberme']);
+            setcookie('rememberme', '',-1, '/');
         }
-
         $_SESSION[] = array();
         session_destroy();
-        header("location: ../view/login.php");
+        header("location: login.php");
         exit;
     }
 

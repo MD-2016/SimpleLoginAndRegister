@@ -78,6 +78,27 @@
 
         return $stmt->fetch(PDO::FETCH_ASSOC); 
     }
+
+    
+    public function deleteUserCookie($id) {
+        $db = new DB();
+        $conn = $db->connect();
+        if($conn == null) {
+            echo "connection has died";
+        }
+        $sql = "UPDATE `Users` SET cookie=:cookie, cookieexpire=:expire WHERE cookie=:session";
+        $cookie = null;
+        $expire = null;
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':cookie', $cookie, PDO::PARAM_STR);
+        $stmt->bindParam(':expire', $expire, PDO::PARAM_STR);
+        $stmt->bindParam(':session', $);
+        $stmt->execute();
+        return $stmt;
+
+    }
+    
     
     public function findUser($email) {
         $db = new DB();
