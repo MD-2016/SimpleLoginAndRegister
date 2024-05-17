@@ -93,7 +93,7 @@
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':cookie', $cookie, PDO::PARAM_STR);
         $stmt->bindParam(':expire', $expire, PDO::PARAM_STR);
-        $stmt->bindParam(':session', $);
+        $stmt->bindParam(':session', $cookie, PDO::PARAM_STR);
         $stmt->execute();
         return $stmt;
 

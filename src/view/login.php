@@ -1,10 +1,11 @@
 <?php
   include('../helpers/validateForms.php');
   include('../controller/usercontroller.php');
-
   $validator = new Validate;
   $userControl = new UserController;
   $res = "";
+
+ 
   
 
   $options = [
@@ -21,6 +22,8 @@
       header("location: userpage.php");
       exit;
   }
+
+  
 
   // check if the user has a cookie saved
   if(isset($_COOKIE['rememberme'])) {
@@ -39,9 +42,8 @@
     }
   }
 
- 
-  
   session_start();
+  
   if(isset($_POST['submit'])) {
     $errorEmail = $validator::validateEmail($_POST['email']);
     $errorPass = $validator::validatePassword($_POST['password']);
@@ -69,7 +71,6 @@
               $res = "Thank you for signing in. Redirecting to your page";
               $_SESSION['loggedIntoMDSite'] = true;
               $_SESSION['username'] = md5(uniqid(mt_rand(), true));
-              $_SESSION['user'] = password_hash($existingUser['user_id'], PASSWORD_DEFAULT, $options);
 
               if(isset($_POST['rememberme'])) {
                 $cookie = bin2hex(random_bytes(16));
@@ -142,8 +143,6 @@
                         <label class="form-label" for="typeEmailX-2">Email</label>
                       </div>
 
-                     
-          
                      
                       <div class="form-outline mb-4">
                         <input type="password" id="typePasswordX-2" class="form-control form-control-lg border border-dark" name="password"/>

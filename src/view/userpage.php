@@ -11,6 +11,7 @@ function debugToConsole($msg) {
         if(isset($_COOKIE['rememberme'])) {
             unset($_COOKIE['rememberme']);
             setcookie('rememberme', '',-1, '/');
+            
         }
         $_SESSION[] = array();
         session_destroy();
